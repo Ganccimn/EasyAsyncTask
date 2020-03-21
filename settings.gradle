@@ -1,0 +1,3 @@
+rootProject.name='EasyAsyncTask'
+include ':app'
+include ':app:easyasynctask'
