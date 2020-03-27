@@ -10,6 +10,7 @@ import com.xlh.raccoon.lib.easyasynctask.EasyAsyncTask;
 import com.xlh.raccoon.lib.easyasynctask.EasyCallback;
 import com.xlh.raccoon.lib.easyasynctask.EasyTask;
 import com.xlh.raccoon.lib.easyasynctask.EasyTaskProgressBar;
+import com.xlh.raccoon.lib.easyasynctask.ForceThrowException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i <= 10; i++) {
               easyTask.updateProgress("已下载%s%%", i * 10);
               SystemClock.sleep(1000);
-              easyTask.forceThrowException(1, "手动异常");
+              throw new ForceThrowException(1, "手动异常");
             }
             return null;
           }

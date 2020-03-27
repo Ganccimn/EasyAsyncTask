@@ -7,20 +7,12 @@ public class EasyTask<T, R> extends AsyncTask<T, String, R> {
 
   private EasyCallback<T, R> easyCallback;
   private EasyTaskProgressBar easyTaskProgressBar;
-  private int code;
-  private String msg;
-  private Exception exception;
+  private ForceThrowException forceThrowException;
 
   public EasyTask<T, R> setProgressDialog(Context context) {
     this.easyTaskProgressBar = new EasyTaskProgressBar(context);
     this.easyTaskProgressBar.setCancelable(false);
     return this;
-  }
-
-  public void forceThrowException(int code, String msg) {
-    this.code = code;
-    this.msg = msg;
-    throw new ForceThrowException("ForceThrowException");
   }
 
   public void updateProgress(String... strings) {
@@ -48,7 +40,7 @@ public class EasyTask<T, R> extends AsyncTask<T, String, R> {
     try {
       r = easyCallback.onWork(this, ts);
     } catch (Exception e) {
-      this.exception = e;
+      this.forceThrowException = new ForceThrowException(e.getMessage());
     }
     return r;
   }
@@ -59,10 +51,13 @@ public class EasyTask<T, R> extends AsyncTask<T, String, R> {
     if (easyTaskProgressBar != null) {
       easyTaskProgressBar.dismiss();
     }
-    if (this.exception == null) {
+    if (this.forceThrowException == null) {
       easyCallback.onFinish(r);
     } else {
-      easyCallback.onFail(code, msg, this.exception.getMessage());
+      easyCallback.onFail(
+          this.forceThrowException.getCode(),
+          this.forceThrowException.getMsg(),
+          this.forceThrowException.getMessage());
     }
   }
 
